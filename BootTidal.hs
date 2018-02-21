@@ -19,14 +19,14 @@ import TidalProc
 (d7,t7) <- superDirtSetters getNow
 (d8,t8) <- superDirtSetters getNow
 (d9,t9) <- superDirtSetters getNow
-(harmor1,tharmor1) <- superDirtSetters getNow
-(harmor2,tharmor2) <- superDirtSetters getNow
+(harmor,tharmor) <- superDirtSetters getNow
+(drums,tdrums) <- superDirtSetters getNow
 
 vis <- procStream
 
 let bps x = cps (x/2)
 let bpm x = bps (x/120)
-let hush = mapM_ ($ silence) [d1,d2,d3,d4,d5,d6,d7,d8,d9,vis,harmor1,harmor2]
+let hush = mapM_ ($ silence) [d1,d2,d3,d4,d5,d6,d7,d8,d9,vis,harmor,drums]
 let solo = (>>) hush
 
 :set prompt "tidal> "
