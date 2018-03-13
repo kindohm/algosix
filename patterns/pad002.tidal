@@ -1,0 +1,65 @@
+cps 1.5
+
+hush
+
+pitches $
+  ctlNum "16*8" # control (scale 0 127 $ slow 10 sine)
+  # s "midi"
+  # midicmd "control" # midichan "0"
+
+hush
+
+do
+  let m p = move $ whenmod 30 26 (slow (4/3)) $ whenmod 40 36 (slow (4/3)) $ p
+  let kickpat = randcat ["0(3,8)", "0*4 ~", "~ 0*4", "[~ 0 0 ~] ~", "0*4", "0*2 0", "0 0*2", "0(5,8)"]
+  pads $ m $ (|+| n (discretise (1/12) $ shift' 1000 $ choose [0,24])) $ stack [
+      whenmod 25 15 (gtfo) $ n kickpat # n "0",
+      whenmod 30 20 (gtfo) $ shift $ (# n "1") $ n kickpat,
+      whenmod 17 10 (gtfo) $ shift' 10 $ n "2*8?",
+      (0.125 <~) $ move $ sometimes (density 2) $ shift' 12 $ n "4/4",
+      sometimes (density 2) $ shift' 11 $ move $ n "8/2",
+      degradeBy 0.6 $ shift' 20 $ (# n "15") $ n kickpat  ]
+    # s "midi" # midicmd "noteOn" # gain "1.25"
+  pitches $ m $ stack [
+    sometimes (# control (slow 99 $ choose [55,0,127])) $ shift $ degradeBy 0.5 $ shift' 88 $ ctlNum "[16,32]*8" # control "63",
+    sometimes (# control (slow 91 $ choose [55,0,127])) $ shift $ degradeBy 0.5 $ shift' 89 $ ctlNum "[5,21]*8" # control "63",
+    sometimes (# control (slow 92 $ choose [55,0,127])) $ shift $ degradeBy 0.5 $ shift' 82 $ ctlNum "[9,25]*8" # control "63"]
+    # midicmd "control" # midichan "0" # s "midi"
+  _masterpitch $ foldEvery [11,12] (# control (discretise (2) $ scale 0 127 $ slow 66.5 rand)) $
+    s "midi*8" # midicmd "control" # midichan "15"
+    # ctlNum "9" # control 63
+  -- reverb big
+  _rev2 $ m $ shift $
+    degradeBy 0.5 $ shift' 17 $
+    s "midi*4" # midicmd "control" # midichan "15"
+    # ctlNum "1" # control (slow 1.389 $ choose [0,0,0,127])
+  -- reverb small
+  _rev1 $ m $ shift $
+    degradeBy 0.5 $ shift' 200 $
+      s "midi*8" # midicmd "control" # midichan "15"
+      # ctlNum "2" # control (slow 1.789 $ choose [0,0,0,0,0,127])
+  -- delay wet
+  _delay $ m $ shift $
+    degradeBy 0.5 $ shift' 81 $ s "midi*8" # midicmd "control" # midichan "15"
+    # ctlNum "3" # control (slow 3.89 $ choose [0,0,0,0,60,80,100,127])
+  -- delay time
+  _delayt $ m $ shift' 81 $
+    s "midi*8" # midicmd "control" # midichan "15"
+    # ctlNum "4" # control (slow 290.228 $ choose [0,1,2,3])
+  -- lpf
+  _lpf $ m $ shift $
+    degradeBy 0.1 $ s "midi" # midicmd "control" # midichan "15"
+    # ctlNum "5" # control (discretise (1/2) $ slow 19.819 $ choose [127,127,127,127,127,127,127,127,127,90,100,80])
+  -- hpf
+  _hpf $ m $ shift' 39 $
+    degradeBy 0.1 $ s "midi" # midicmd "control" # midichan "15"
+    # ctlNum "6" # control (discretise (1/2) $ slow 29.819 $ choose [0,0,0,0,0,0,0,0,0,15,45,30])
+  -- gross beat
+  _gross $ m $ shift' 39 $
+    whenmod 10 6 (# control (scale 43 127 $ slow 612 rand)) $
+    degradeBy 0.1 $ s "midi" # midicmd "control" # midichan "15"
+    # ctlNum "7" # control "0"
+  -- flanger
+  _flang $ m $ shift' 391 $
+    degradeBy 0.1 $ s "midi*4" # midicmd "control" # midichan "15"
+    # ctlNum "8" # control (slow 29.819 $ choose [0,0,0,0,0,127])

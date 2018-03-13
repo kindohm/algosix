@@ -2,13 +2,9 @@
 :set prompt ""
 :module Sound.Tidal.Context
 
-:load C:\Users\mike.hodnick\code\algosix\TidalProc.hs
-
 (cps, nudger, getNow) <- cpsUtils'
 
 import Sound.Tidal.Context
-
-import TidalProc
 
 (d1,t1) <- superDirtSetters getNow
 (d2,t2) <- superDirtSetters getNow
@@ -21,12 +17,39 @@ import TidalProc
 (d9,t9) <- superDirtSetters getNow
 (harmor,tharmor) <- superDirtSetters getNow
 (drums,tdrums) <- superDirtSetters getNow
+(pads,tpads) <- superDirtSetters getNow
+(pitches,tpitches) <- superDirtSetters getNow
+(pans,tpans) <- superDirtSetters getNow
+(_rev1,_trev1) <- superDirtSetters getNow
+(_rev2,_trev2) <- superDirtSetters getNow
+(_delay,_tdelay) <- superDirtSetters getNow
+(_delayt,_tdelayt) <- superDirtSetters getNow
+(_lpf,_tlpf) <- superDirtSetters getNow
+(_hpf,_thpf) <- superDirtSetters getNow
+(_gross,_tgross) <- superDirtSetters getNow
+(_flang,_tflang) <- superDirtSetters getNow
 
-vis <- procStream
+(midicmd, midicmd_p) = pS "midicmd" (Nothing)
+(midichan, midichan_p) = pF "midichan" (Nothing)
+(progNum, progNum_p) = pF "progNum" (Nothing)
+(val, val_p) = pF "val" (Nothing)
+(uid, uid_p) = pF "uid" (Nothing)
+(array, array_p) = pF "array" (Nothing)
+(frames, frames_p) = pF "frames" (Nothing)
+(seconds, seconds_p) = pF "seconds" (Nothing)
+(minutes, minutes_p) = pF "minutes" (Nothing)
+(hours, hours_p) = pF "hours" (Nothing)
+(frameRate, frameRate_p) = pF "frameRate" (Nothing)
+(songPtr, songPtr_p) = pF "songPtr" (Nothing)
+(ctlNum, ctlNum_p) = pF "ctlNum" (Nothing)
+(control, control_p) = pF "control" (Nothing)
+(amp, amp_p) = pF "control" (Nothing)
+(ccn, ccn_p) = pI "control" (Nothing)
+(ccv, ccv_p) = pI "control" (Nothing)
 
 let bps x = cps (x/2)
 let bpm x = bps (x/120)
-let hush = mapM_ ($ silence) [d1,d2,d3,d4,d5,d6,d7,d8,d9,vis,harmor,drums]
+let hush = mapM_ ($ silence) [d1,d2,d3,d4,d5,d6,d7,d8,d9,harmor,drums, pads,pitches,pans,_rev1,_rev2,_delay,_delayt,_lpf,_hpf,_gross,_flang]
 let solo = (>>) hush
 
 :set prompt "tidal> "

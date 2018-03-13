@@ -47,6 +47,8 @@ let rip a b p = within (0.25, 0.75) (slow 2 . rev . stut 8 a b) p
     crushit p = (|=| crush (scale 3 8 $ slow 1.1 tri)) $ p
     replicator text1 = [putStr (text1) | x <- replicate 3000 text1]
     flood text2 = sequence_(replicator text2)
+
+    
     domidi = midicmd "[noteOn, control]"
     articulator = midichan 0
     rebelion = midichan 1
@@ -66,3 +68,6 @@ let rip a b p = within (0.25, 0.75) (slow 2 . rev . stut 8 a b) p
     imgtime = 109
     imgspeed = 110
     fader = 111
+
+
+-- test

@@ -1,5 +1,3 @@
-s.options.device_("MME : Focusrite USB (Focusrite USB Audio)");
-
 s.options.device_("MME : Line 1 (Virtual Audio Cable)");
 
 (
@@ -13,7 +11,8 @@ s.options.numOutputBusChannels = 2; // set this to your hardware output channel 
 // boot the server and start SuperDirt
 s.waitForBoot {
 	~dirt = SuperDirt(2, s); // two output channels, increase if you want to pan across more channels
-	~dirt.loadSoundFiles("C:\\algosix-samples\\*");
+	// ~dirt.loadSoundFiles("C:\\Users\\kindohm\\studio\\live-2018-audio\\samples\\*");
+	~dirt.loadSoundFiles("C:\\Users\\kindohm\\studio\\tidal-samples\\live-2016\\*");
 	s.sync; // wait for samples to be read
 	~dirt.start(57120, [0, 0]);   // start listening on port 57120, create two busses each sending audio to channel 0
 };
@@ -26,10 +25,7 @@ MIDIClient.init;
 MIDIClient.list; // to check, which are there, you can query them
 )
 
-// create a midi out connection
-~midiOut = MIDIOut.newByName("Focusrite USB MIDI", "Focusrite USB MIDI"); // substitute your own device here
-
- // you may want to adjust the latency here
+// ~midiOut = MIDIOut.newByName("Focusrite USB MIDI", "Focusrite USB MIDI");
+~midiOut = MIDIOut.newByName("LoopBe Internal MIDI", "LoopBe Internal MIDI");
 ~midiOut.latency = 0.45;
-
-~dirt.soundLibrary.addMIDI(\harmor, ~midiOut);
+~dirt.soundLibrary.addMIDI(\midi, ~midiOut);
