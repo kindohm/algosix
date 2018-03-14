@@ -1,0 +1,59 @@
+cps 1.5
+
+hush
+
+do
+  let bank = "[sarb1]/32"
+  let m p = id $ p
+  let kickpat = randcat ["0(3,8)", "0*4 ~", "~ 0*4", "[~ 0 0 ~] ~", "0*4", "0*2 0", "0 0*2", "0(5,8)"]
+  d2 $ (|*| gain "1.2") $
+    m $
+    stack [
+      gtfo $ gain kickpat # sbank bank "k" # n (irand 4) # cut "1",
+      gtfo $ shift $ gain kickpat # sbank bank "sd" # n (shift' 2 $ irand 4) # cut "2",
+      shift' 10 $ gain "0*8?" # sbank bank "p" # n (shift' 3 $ irand 8) # cut "3",
+      gtfo $ (0.125 <~) $ move $ sometimes (density 2) $ shift' 12 $ sbank bank "b" # n (shift' 4 $ irand 10) # cut "4",
+      gtfo $ sometimes (density 2) $ shift' 11 $ move $ sbank bank "m" # n (shift' 5 $ irand 10) # cut "5",
+      (|*| gain "[1 0.7]/32") $ degradeBy 0.6 $ shift' 20 $ sbank bank "pad" # n (shift' 6 $ irand 18) # cut "6"  ]
+  -- reverb big
+  _rev2 $ gtfofx $ m $ shift $
+    degradeBy 0.5 $ shift' 17 $
+    s "midi*4" # fxchan
+    # ctlNum "1" # control (slow 1.389 $ choose [0,0,0,127])
+  -- reverb small
+  _rev1 $ m $ shift $
+    degradeBy 0.5 $ shift' 200 $
+      s "midi*8" # fxchan
+      # ctlNum "2" # control (slow 1.789 $ choose [0,0,0,0,0,127])
+  -- delay wet
+  _delay $ gtfofx $ m $ shift $
+    degradeBy 0.5 $ shift' 81 $ s "midi*8" # fxchan
+    # ctlNum "3" # control (slow 3.89 $ choose [0,0,0,0,60,80,100,127])
+  -- delay time
+  _delayt $ gtfofx $ m $ shift $ degradeBy 0.5 $ shift' 81 $
+    s "midi*8" # fxchan
+    # ctlNum "4" # control (slow 290.228 $ choose [0,1,2,3])
+  -- lpf
+  _lpf $ m $ shift $
+    s "midi" # fxchan
+    # ctlNum "5" # control (discretise (1/2) $ slow 19.819 $ choose [127,127,127,127,127,127,127,127,127,90,100,80])
+  -- hpf
+  _hpf $ m $ shift' 39 $
+    s "midi" # fxchan
+    # ctlNum "6" # control (discretise (1/2) $ slow 29.819 $ choose [0,0,0,0,0,0,0,0,0,15,45,30])
+  -- flanger
+  _flang $gtfofx $  m $ shift' 391 $
+    s "midi*4" # fxchan
+    # ctlNum "8" # control (slow 29.819 $ choose [0,0,0,0,0,127])
+  -- waveshaper
+  _gross $gtfofx $  m $ shift' 391 $ every 40 (# control (discretise 1 $ slow 77.7 $ choose [0,127])) $
+    s "midi*4" # fxchan
+    # ctlNum "7" # control "0"
+
+
+
+d1 $ sound "k"
+
+_flang $ s "midi" # nudge "0.35"
+
+hush
