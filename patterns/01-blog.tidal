@@ -5,13 +5,13 @@ hush
 do
   let bank = "[blog2 blog1]/16"
   let m p = id $ p
-  d1 $ m $ stack [
-    degradeBy 0.75 $ shift $ gain "0(3,8)" # sbank bank "pad" # n (shift $ irand 6) # cut 1,
+  d1 $ (|*| gain "1.25") $ m $ stack [
+    (# gain "[1 0.8]") $ degradeBy 0.75 $ shift $ gain "0(3,8)" # sbank bank "pad" # n (shift $ irand 6) # cut 1,
     gtfo $ foldEvery [2,3] (sometimes (0.125 ~>)) $ shift' 8 $ gain "~ 0/2" # sbank bank "sd" # n (shift' 2 $ irand 5) # cut 2,
     gtfo $ move $ slow 2 $ gain "0(3,8) ~" # sbank bank "k" # n (shift' 3 $ irand 4) # cut 3,
     sometimes (fast 2) $ shift' 2 $ degradeBy 0.5 $ shift' 2000 $ gain "0*8" # sbank bank "p" # n (shift' 4 $ irand 17) # cut 4,
     gtfo $ gain "{[~ 0]*2 ~ ~ ~ ~ ~ ~}%2" # sbank bank "b" # n (shift' 5 $ irand 25) # cut 5,
-    gtfo $ degradeBy 0.5 $ shift' 7 $ gain "~ 0 ~ ~" # sbank bank "m" # cut 6 ] # gain 1.25
+    gtfo $ degradeBy 0.5 $ shift' 7 $ gain "~ 0 ~ ~" # sbank bank "m" # cut 6 ] # gain 1
   _rev2 $ m $ shift $
     degradeBy 0.5 $ shift' 17 $
     s "midi*8" # fxchan
@@ -28,20 +28,24 @@ do
     s "midi*8" # fxchan
     # ctlNum "4" # control (slow 290.228 $ choose [1,2,3,4])
   -- lpf
-  _lpf $ m $ shift $
+  _lpf $   m $ shift $
     foldEvery [7,11] (# control (scale 80 127 $ slow 1.77 $ sine)) $
     degradeBy 0.5 $ shift' 101 $ s "midi" # fxchan
     # ctlNum "5" # control 127
   -- hpf
-  _hpf $ m $ shift' 39 $ foldEvery [6,10] (# control (scale 0 45 $ slow 29.819 $ sine)) $
+  _hpf $  m $ shift' 39 $ foldEvery [6,10] (# control (scale 0 45 $ slow 29.819 $ sine)) $
     degradeBy 0.5 $ shift' 102 $ s "midi" # fxchan
     # ctlNum "6" # control "0"
   _flang $ m $ shift' 391 $
     degradeBy 0.5 $ s "midi*8" # fxchan
     # ctlNum "8" # control (slow 29.819 $ choose [0,0,0,0,0,127])
-  _gross $ m $ shift' 39 $
+  _gross $ (# control "0") $ m $ shift' 39 $
     s "midi*2" # fxchan
     # ctlNum "7" # control "0"
 
+
+hush
+
+d1 $ sound "k*8?"
 
 hush
