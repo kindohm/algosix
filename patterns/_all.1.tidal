@@ -1,0 +1,346 @@
+---- PAD 3 --------
+bps (180/120)
+
+flood "OH HAI!!!!! "
+
+do
+  let bank = "[blog1 blog2]/16"
+  let m p = move $ p 
+    d1 $ (|*| gain "1.25") $ whenmod 20 17 (iter 8) $ m $ whenmod 10 8 (jux rev) $ 
+    every 5 (rip 0.5 0.125) $ every 6 (# coarse "{8 4 16 12}%7") $ every 7 (# accelerate "-1 1") $
+    every 8 (rip' 0 1 8 0.25 0.25) $ every 9 (|*| speed "-1") $
+    stack [
+      degradeBy 0.3 $ shift $ randcat [ brakk "ion1*8", brakk "ion2*8", brakk "ion3*8" ],
+    (# up (slow 1.1 $ choose [0,-2,-3,-12])) $ 
+      (# gain "[1 0.8]") $ degradeBy 0.75 $ shift $ gain "0(3,8)" # sbank bank "pad" # n (shift $ irand 6) # cut 1,
+    foldEvery [2,3] (sometimes (0.125 ~>)) $ shift' 8 $ gain "~ 0/2" # sbank bank "sd" # n (shift' 2 $ irand 5) # cut 2,
+    move $ slow 2 $ gain "0(3,8) ~" # sbank bank "k" # n (shift' 3 $ irand 4) # cut 3,
+    sometimes (fast 2) $ shift' 2 $ degradeBy 0.5 $ shift' 2000 $ gain "0*8" # sbank bank "p" # n (shift' 4 $ irand 17) # cut 4,
+    gain "{[~ 0]*2 ~ ~ ~ ~ ~ ~}%2" # sbank bank "b" # n (shift' 5 $ irand 25) # cut 5,
+    degradeBy 0.5 $ shift' 7 $ gain "~ 0 ~ ~" # sbank bank "m" # cut 6 ] # gain 1
+  _rev2 $ m $ shift $
+    degradeBy 0.5 $ shift' 17 $
+    s "midi*8" # fxchan
+    # ctlNum "1" # control (slow 1.389 $ choose [0,127])
+  _rev1 $ m $ shift $
+    degradeBy 0.5 $ shift' 200 $
+      s "midi*8" # fxchan
+      # ctlNum "2" # control (slow 1.789 $ choose [0,0,0,127,127,127])
+  _delay $ m $ whenmod 9 7 (# control (discretise (1/4) $ slow 3.89 $ choose [0,0,0,0,60,80,100,127])) $
+    shift $
+    degradeBy 0.5 $ shift' 81 $ s "midi*8" # fxchan
+    # ctlNum "3" # control "0"
+  _delayt $ m $ degradeBy 0.5 $ shift' 81 $
+    s "midi*8" # fxchan
+    # ctlNum "4" # control (slow 290.228 $ choose [1,2,3,4])
+  -- lpf
+  _lpf $ m $ shift $
+    foldEvery [7,11] (# control (scale 80 127 $ slow 1.77 $ sine)) $
+    degradeBy 0.5 $ shift' 101 $ s "midi" # fxchan
+    # ctlNum "5" # control 127
+  -- hpf
+  _hpf $  m $ shift' 39 $ foldEvery [6,10] (# control (scale 0 45 $ slow 29.819 $ sine)) $
+    degradeBy 0.5 $ shift' 102 $ s "midi" # fxchan
+    # ctlNum "6" # control "0"
+  _flang $ m $ shift' 391 $
+    degradeBy 0.5 $ s "midi*8" # fxchan
+    # ctlNum "8" # control (slow 29.819 $ choose [0,0,0,0,0,127])
+  _gross $ whenmod 17 15 (# control (scale 0 127 $ slow 3.33 rand)) $ m $ shift' 39 $
+    s "midi*2" # fxchan
+    # ctlNum "7" # control "0"
+
+
+
+
+----- BLUE CODE -----------
+-- bluejay
+bps (180/120)
+
+hush
+
+flood "woooo!!!!!  "
+
+do
+    let m p = move $ p
+    let pat = "{1 1*2 ~ ~ ~ 1 ~ 1*2 1 ~ 1 1 ~ ~ [~ 1] ~ 1 [~ 1] ~ 1 ~}%8"
+    d1 $ (|*| gain "1.2") $ m $
+      stack [
+        rarely ((|*| gain "1.1") . (|=| s "cpr") . (|=| n (slow 20 $ irand 10)) . (|=| speed (scale 0.8 1.2 $ slow 1.1 rand))) $
+            whenmod 8 4 (|+| n "0") $ (|*| gain "[1.05 1.1]/9") $ gain pat # s "[k fk]/9" # cut "2",
+        gain pat # sound "bj2"
+            # lpf 3000
+            # hpf 300
+            # cut "1"
+            # n (slow 12 $ choose[1,2,3])
+            # shape "0",
+        whenmod 10 5 (0.125 <~) $ s "uls" # gain "1.2" # speed "[1.5 0.8]/3" # shape "0.2",
+        sometimes (slow 2) $ shift $ s "wet:3*12"
+            # gain (scale 0.6 1 $ slow 1.3 rand)
+            # pan (scale 0.3 0.7 $ slow 1.4 rand)
+            # speed "2" ]
+    _rev2 $ gtfofx $ m $ stdrev2
+    _rev1 $ gtfofx $ m $ stdrev1
+    _delay $ m $ stddelay
+    _delayt $  m $ stddelayt
+    _lpf $ gtfofxhigh $ m $ stdlpf
+    _hpf $ gtfofx $ m $ stdhpf
+    _flang $ m $ stdflang
+    _gross $ whenmod 16 14(# control (scale 0 60 $ slow 373 rand)) $ m $ stdgross
+
+t1 (clutchIn 16) $ (|*| gain "1.2") $ m $
+    stack [
+        rarely ((|*| gain "1.1") . (|=| s "cpr") . (|=| n (slow 20 $ irand 10)) . (|=| speed (scale 0.8 1.2 $ slow 1.1 rand))) $
+            whenmod 8 4 (|+| n "0") $ (|*| gain "[1.05 1.1]/9") $ gain pat # s "[k fk]/9" # cut "2",
+        gain pat # sound "bj2"
+            # lpf 3000
+            # hpf 300
+            # cut "1"
+            # n (slow 12 $ choose[1,2,3])
+            # shape "0",
+        gtfo $ whenmod 10 5 (0.125 <~) $ s "uls" # gain "1.2" # speed "[1.5 0.8]/3" # shape "0.2",
+        gtfo $ sometimes (slow 2) $ shift $ s "wet:3*12"
+            # gain (scale 0.6 1 $ slow 1.3 rand)
+            # pan (scale 0.3 0.7 $ slow 1.4 rand)
+            # speed "2" ]
+
+
+
+
+d1 $ sound "harmor" # n "1" # midicmd "noteOn" # midichan "0"
+
+
+
+--- innterlude ----
+
+cps 1
+
+hush
+
+do
+d3 $ sound "alstab" # speed "0.25" # cut "100" # gain 1.35
+
+d2 $ sound "pattonfull*8" # cut "3" # gain 1.25
+
+hush
+
+d2 silence
+
+
+------- rebellion ----------
+bps (150/120)
+
+do
+    let pat  = "{1       ~ ~ 1 ~ 1 ~ 1 ~ ~ }%16"
+        vpat = "{[0 1]/2 ~ ~ 1 ~ 1 ~ 1 ~ ~ }%16"
+        cpp  = "{1       ~ ~ ~ ~ ~ ~ ~ ~ ~ }%16"
+    d1 $ (|*| gain "1.2") $ shift $ move $
+      stack [
+        degradeBy 0.3 $ shift $ brakk "funky*8",
+        gain pat # n (discretise (1/8) $ slow 3.3 $ irand 30) # s "rebsy" # cut 877,
+        gain (pat) # s "mi" # n (discretise (1/8) $ slow 4 $ irand 30) # cut 10112 # gain "0.9",
+        gain (pat) # s "rebbd" # cut 1011,
+        slow 2 $ gain cpp # s "rebcp" # cut 101,
+        whenmod 20 15 (gtfo) $ n "{0 0 1}%16" # s "rebch" # cut 200 # gain 0.8,
+        ((0.0625) <~) $ gain pat # s "rebtom"]
+    _rev1 $ gtfofx $ stdrev1
+    _rev2 $ gtfofx $ stdrev2
+    _delay $ gtfofx $ stddelay
+    _delayt $ gtfofx $ stddelayt
+    _lpf $ gtfofxhigh $ stdlpf
+    _hpf $ gtfofx $ stdhpf
+    _flang $ gtfofx $ stdflang
+    _gross $ gtfofx $ stdgross
+
+hush
+
+
+flood "hey. "
+
+
+------- pad 2 ----------
+
+cps 1.5
+
+hush
+
+
+flood "HEY HEY HEY HEY HEY "
+
+do
+  let bank = "[sarb1 sarb2]/32"
+  let m p = move $ p
+  let kickpat = randcat ["0(3,8)", "0*4 ~", "~ 0*4", "[~ 0 0 ~] ~", "0*4", "0*2 0", "0 0*2", "0(5,8)"]
+  d1 $ degradeBy 0.7 $ (|*| gain "1.2") $
+    m $  every 5 (rip 0.5 0.1) $ every 4 (# accelerate "-1 1") $ every 7 (# coarse "[8 12 16 24 4}%7") $
+    stack [
+      degradeBy 0.5 $ shift' 3 $s "run(3,8)" # n "1" # cut "383" # gain "0.9",
+      gain kickpat # sbank bank "k" # n (irand 4) # cut "1",
+      shift $ gain kickpat # sbank bank "sd" # n (shift' 2 $ irand 4) # cut "2",
+      shift' 10 $ gain "0*8?" # sbank bank "p" # n (shift' 3 $ irand 8) # cut "3",
+      (0.125 <~) $ move $ sometimes (density 2) $ shift' 12 $ sbank bank "b" # n (shift' 4 $ irand 10) # cut "4",
+      sometimes (density 2) $ shift' 11 $ move $ sbank bank "m" # n (shift' 5 $ irand 10) # cut "5",
+      (|*| gain "[1 0.7]/32") $ degradeBy 0.6 $ shift' 20 $ sbank bank "pad" # n (shift' 6 $ irand 18) # cut "6"  ] # gain 1
+  -- reverb big
+  _rev2 $ m $ shift $
+    degradeBy 0.5 $ shift' 17 $
+    s "midi*4" # fxchan
+    # ctlNum "1" # control (slow 1.389 $ choose [0,0,0,127])
+  -- reverb small
+  _rev1 $ m $ shift $
+    degradeBy 0.5 $ shift' 200 $
+      s "midi*8" # fxchan
+      # ctlNum "2" # control (slow 1.789 $ choose [0,0,0,0,0,127])
+  -- delay wet
+  _delay $ m $ shift $
+    degradeBy 0.5 $ shift' 81 $ s "midi*8" # fxchan
+    # ctlNum "3" # control (slow 3.89 $ choose [0,0,0,0,60,80,100,127])
+  -- delay time
+  _delayt $  m $ shift $ degradeBy 0.5 $ shift' 81 $
+    s "midi*8" # fxchan
+    # ctlNum "4" # control (slow 290.228 $ choose [0,1,2,3])
+  -- lpf
+  _lpf $ m $ shift $
+    s "midi" # fxchan
+    # ctlNum "5" # control (discretise (1/2) $ slow 19.819 $ choose [127,127,127,127,127,127,127,127,127,90,100,80])
+  -- hpf
+  _hpf $ m $ shift' 39 $
+    s "midi" # fxchan
+    # ctlNum "6" # control (discretise (1/2) $ slow 29.819 $ choose [0,0,0,0,0,0,0,0,0,15,45,30])
+  -- flanger
+  _flang $ m $ shift' 391 $
+    s "midi*4" # fxchan
+    # ctlNum "8" # control (slow 29.819 $ choose [0,0,0,0,0,127])
+  -- waveshaper
+  _gross $gtfofx $  m $ shift' 391 $ every 40 (# control (discretise 1 $ slow 77.7 $ choose [0,127])) $
+    s "midi*4" # fxchan
+    # ctlNum "7" # control "0"
+
+
+
+
+-- c code
+bps (140/120)
+
+-- intro
+do
+    let struc = "{x ~ ~ ~ ~ ~ [x] ~ ~ [~ x] ~ ~}%8"
+    d1 $ whenmod 5 3 (rev) $ slow "<4 8 24 16 12>" $ superimpose (0.5 <~) $ trunc 0.5 $
+        striate "32 16 128 64" $
+        rep' 3 $ struct struc $ sound "ccstab"
+            # n (slow 18 $ run 6)
+            # gain "1.2"
+            # speed "[0.5 0.75 0.5 1 0.25]/13"
+            # shape "0"
+    _delay $ stddelay
+    _delayt $ stddelayt
+    _lpf $ gtfofxhigh $ stdlpf
+    _hpf $ gtfofx $ stdhpf
+    _flang $ stdflang
+    _rev1 $ stdrev1
+    _rev2 $ (# control "127") $ stdrev2
+
+hush
+
+do
+    let struc = "{x ~ ~ ~ ~ ~ [x] ~ ~ [~ x] ~ ~}%8"
+    let m p = move $ p
+    d1 $ (|*| gain "1.2") $
+        m $
+        stack [
+            gtfo $ degradeBy 0.5 $ shift $ gain "1*16" # sound "[cckit1 cckit2]/10" # n (irand 10) |=| cut "-1",
+            rep' 3 $ struct struc $ sound "cck" # n (slow 18 $ run 6) |=| cut "2",
+            rep' 3 $ struct struc $ sound "ccstab" # n (slow 18 $ run 6) # gain "1"
+              |=| cut "1" # speed "[0.5 0.75 0.5 1]/13" # shape "0.2",
+            whenmod 15 11 (gtfo) $ sound "~ cccp" # gain "1.2" # shape "0.1",
+            gtfo $ struct "{~ x [~ x] [~ x/2] ~}%2" $ sound "ccs" # n "[0 1 2]/32" # speed "1.5"] # gain "1.25"
+    _delay $ gtfofx $ m $ stddelay
+    _delayt $ gtfofx $ m $ stddelayt
+    _lpf $ gtfofxhigh $ m $ stdlpf
+    _hpf $ gtfofx $ m $ stdhpf
+    _flang $ gtfofx $ m $ stdflang
+    _rev1 $ gtfofx $ m $ stdrev1
+    _rev2 $ gtfofx $ m $ stdrev2
+
+
+    
+
+------- d code ---------
+
+bps (180/120)
+
+let npat = "[0 2 4 6]/16"
+
+d1 silence
+
+hush
+
+do
+let m p = id $ p
+d2 $ (|*| gain "1.2") $ move $
+  every 9 (rev) $
+  every 5 (|=| coarse (shift' 3 $ choose [4,6..18])) $
+  every 8 (|=| accelerate "0.5 -0.5") $
+  whenmod 13 11 (|=| accelerate "1") $
+    slow 2 $ rep' 6 $ sound "namesy" # n "[0 1]/8" # cut "23" # gain "1" # speed "0.5" # shape "0.4"
+
+_delay $ gtfofx $ m $ stddelay
+_delayt $ gtfofx $ m $ stddelayt
+_lpf $ gtfofxhigh $ m $ stdlpf
+_hpf $ gtfofx $ m $ stdhpf
+_flang $ gtfofx $ m $ stdflang
+_rev1 $ gtfofx $ m $ stdrev1
+_rev2 $ gtfofx $ m $ stdrev2
+
+
+flood "ok. "
+
+bps (120/120)
+
+do
+let m p = id $ p
+d2 $ degradeBy 0.8 $ (|*| gain "1.2") $ stut' 2 (0.125*3) (|*| speed "1.5") $
+  move $ every 5 (rip 0.5 0.125) $ every 6 (# accelerate "-1 1") $ 
+  stack [
+    gtfo $ degradeBy 0.3 $ brakk "fur1*8",
+    every 8 (|=| accelerate "0.5 -0.5") $
+      whenmod 13 11 (|=| accelerate "1") $
+      stack [
+        -- vox
+        gtfo $ whenmod 16 4 (gtfo) $
+          every 3 (|*| speed (choose [0.9,0.8,0.7])) $
+          rarely (stut' 1 (0.0625) (|*| gain "1")) $ sound "namevox([3 5 7]/3,16)" # cut "819",
+        -- kicks
+        rarely (stut' 1 (0.0625) (|*| gain "1")) $ sound "nyanx1([3 5 7]/3,16)" # n (discretise (1/2) $ irand 20)
+           # cut "38333" # gain "0.9" # unit "c" # speed "4",
+        rarely (stut' 1 (0.0625) (|*| gain "1")) $ sound "name([3 5 7]/3,16)" # n npat,
+        -- snares
+        gtfo $ slow 2 $ (|+| n "1") $ sound "~ name [~ name] ~" # n npat # shape "0.2"],
+    -- vaccuums
+    gtfo $ every 8 (|=| accelerate "0.5 -0.5") $
+      whenmod 13 11 (|=| accelerate "1") $
+      slow 2 $ rep' 6 $ sound "namesy" # n "[0 1]/8" # cut "23" # speed "0.5" # shape "0.4"] # gain 1
+_delay $ m $ stddelay
+_delayt $ m $ stddelayt
+_lpf $ gtfofxhigh $ m $ stdlpf
+_hpf $ gtfofx $ m $ stdhpf
+_flang $ gtfofx $ m $ stdflang
+_rev1 $  m $ stdrev1
+_rev2 $ gtfofx $ m $ stdrev2
+
+
+
+
+
+hush
+
+
+
+flood "thanks!  "
+
+
+
+
+
+
+
+

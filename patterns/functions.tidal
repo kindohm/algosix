@@ -45,8 +45,10 @@ let rip a b p = within (0.25, 0.75) (slow 2 . rev . stut 8 a b) p
     accelrate = accelerate
     discretize = discretise
     crushit p = (|=| crush (scale 3 8 $ slow 1.1 tri)) $ p
-    replicator text1 = [putStr (text1) | x <- replicate 3000 text1]
+    replicator text1 = [putStr (text1) | x <- replicate 500 text1]
     flood text2 = sequence_(replicator text2)
+    replicator' n text1 = [putStr (text1) | x <- replicate n text1]
+    flood' n text2 = sequence_(replicator' n text2)
     sbank bank pat = s (flip (++) <$> pat <*> bank)
     fxchan = s "midi" # midicmd "control" # midichan "15" # nudge "0.35"
     stdrev2 = shift $ degradeBy 0.5 $ shift' 17 $ gain "1*8" # fxchan
