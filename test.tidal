@@ -1,0 +1,7 @@
+let discretise = _discretise
+
+d1 $ sound "rebsy" # cut "1" # n (discretise (1/4) $ irand 40)
+
+d1 $ sound "k*8"
+
+hush
